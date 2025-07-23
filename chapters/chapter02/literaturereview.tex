@@ -1,5 +1,22 @@
 % Chapter 2: Literature Review
 \chapter{Literature Review of Developer Security Tooling}
 \label{chap:litreview}
+\setlength{\parskip}{1em}
 
-% Add content here
+The landscape of software security is dominated by the principle of "shifting left"—embedding security practices early in the development lifecycle. This chapter reviews the key literature that informs the design and goals of this thesis, focusing on the current state of security tooling, the challenges developers face in adopting them, and the foundational principles for building effective, developer-centric solutions.
+
+\section{The State of Modern Security Tooling}
+
+The effectiveness of any security toolkit is best understood in the context of the existing ecosystem. A recent and comprehensive benchmark of Static Application Security Testing (SAST) tools was conducted by Charoenwet et al. (2024). Their work provides a vital, up-to-date analysis of modern tools like Semgrep and CodeQL, evaluating their performance on real-world codebases. The study highlights significant gaps in usability and effectiveness, noting that even state-of-the-art tools struggle with high false-positive rates and complex configuration, which can deter developer adoption. This finding directly motivates the core goal of this thesis: to create a unified and more intuitive tool that lowers the barrier to entry for developers \cite{charoenwet2024empirical}.
+
+Further informing the evaluation methodology of this project, Bermejo Higuera et al. (2020) present a structured approach for benchmarking web application security tools against the OWASP Top 10. Their work provides a clear and academically rigorous framework for evaluation, using real-world test applications to measure detection rates. This methodology serves as a direct model for the evaluation chapter of this thesis, ensuring that the toolkit's effectiveness is measured against established and relevant criteria \cite{bermejo2020benchmarking}.
+
+\section{Developer-Centric Security and Tool Adoption}
+
+The success of a security tool is not solely dependent on its technical capabilities, but also on its adoption by developers. A pivotal qualitative study by Pashchenko et al. (2021) investigates the real-world barriers and enablers for the adoption of security development tools. Their findings reveal that developers are more likely to adopt tools that are well-integrated into their existing workflows, provide clear and actionable feedback, and do not disrupt their productivity. This research strongly supports the developer-centric approach of this thesis, justifying the focus on a seamless CLI experience and tight IDE integration \cite{pashchenko2021qualitative}.
+
+Reinforcing the importance of the development environment, Nadkarni and Kästner (2022) conducted a multi-method exploration of developers' needs when fixing security bugs directly within an IDE. Their work underscores the critical need for tools that provide immediate, contextual, and actionable feedback. By surfacing vulnerabilities at the moment they are introduced, IDE-integrated tools can significantly reduce the cognitive load on developers and foster a more proactive security culture. This study provides the empirical foundation for the Visual Studio Code extension proposed in this thesis, which aims to bridge the gap between security analysis and the coding process \cite{nadkarni2022fixing}.
+
+\section{Foundational Principles for Rule-Based Analysis}
+
+To be effective, a security scanner must be built on a solid theoretical foundation. Li (2020) provides a comprehensive survey that maps the high-level categories of the OWASP Top 10 to the more granular and formal classifications of the Common Weakness Enumeration (CWE) and SANS Top 25. This work is essential for translating broad security principles into concrete, scannable rules for a static analysis engine. By providing a systematic approach to vulnerability mapping, this survey directly informs the design of the rule set for the Python static analysis module in this project, ensuring that it is both comprehensive and grounded in established security standards \cite{li2020vulnerabilities}.
