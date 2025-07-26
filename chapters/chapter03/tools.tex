@@ -1,33 +1,32 @@
-% Chapter 3: Existing Tools
-\chapter{Existing Tools}
+% Chapter 3: Existing Tools for CI/CD
+\chapter{Existing Tools for CI/CD}
 \label{chap:tools}
 \setlength{\parskip}{1em}
 
-This chapter provides an overview of existing tools used for identifying security vulnerabilities in software. The tools are categorized based on their analysis techniques: Static Application Security Testing (SAST), Dynamic Application Security Testing (DAST), and Interactive Application Security Testing (IAST).
+This chapter provides an overview of existing tools used for identifying security vulnerabilities in software, with a focus on those that are well-suited for integration into a CI/CD pipeline. We will focus on Static Application Security Testing (SAST) and Software Composition Analysis (SCA) tools, as these are the most relevant for a source code analysis tool.
 
 \section{Static Application Security Testing (SAST)}
-SAST tools analyze source code, byte code, or binary code for security vulnerabilities without executing the application.
+SAST tools analyze source code, byte code, or binary code for security vulnerabilities without executing the application. This makes them ideal for use in a CI/CD pipeline, as they can be run before the code is deployed.
 
 \begin{itemize}
     \item \textbf{Semgrep:} An open-source, multi-language static analysis tool that supports custom rules written in YAML. It is fast and suitable for CI/CD pipelines.
+    \begin{verbatim}
+# Example: Find hardcoded secrets in Python code
+semgrep --config="p/ci" --error .
+    \end{verbatim}
     \item \textbf{Bandit:} A tool designed for finding common security issues in Python code. It works by analyzing the Abstract Syntax Tree (AST) of the code.
-    \item \textbf{Insider:} A SAST tool focused on the OWASP Top 10 vulnerabilities. It supports multiple languages, including Java, C#, JavaScript, and Python.
+    \begin{verbatim}
+# Example: Scan a Python file for vulnerabilities
+bandit -r examples/hardcoded_password.py
+    \end{verbatim}
 \end{itemize}
 
-\section{Dynamic Application Security Testing (DAST)}
-DAST tools test the running application for vulnerabilities by sending requests and analyzing the responses.
-
+\subsection{Feasible Features for Our Tool}
+Given the time constraints, we will focus on implementing a few key features from these tools:
 \begin{itemize}
-    \item \textbf{OWASP ZAP:} An open-source web application security scanner. It can be used as a proxy to intercept and modify traffic, as well as for automated scanning.
-    \item \textbf{Nikto:} An open-source web server scanner that checks for outdated software, dangerous files, and other common vulnerabilities.
-\end{itemize}
-
-\section{Interactive Application Security Testing (IAST)}
-IAST tools combine elements of both SAST and DAST. They use agents to instrument the application and monitor its behavior during runtime.
-
-\begin{itemize}
-    \item \textbf{Contrast Security:} A commercial IAST tool that integrates with the application to provide real-time vulnerability detection and feedback.
-    \item \textbf{VULAS (Vulnerability Assessment Tool):} An open-source, language-agnostic tool that uses a hybrid approach to identify vulnerabilities by analyzing both the source code and the runtime behavior of the application.
+    \item \textbf{Custom Rules:} We will implement a simple rule engine that can be used to define custom rules for our tool. This will allow us to tailor the tool to our specific needs.
+    \item \textbf{AST Analysis:} We will use an existing library to parse the source code into an Abstract Syntax Tree (AST). This will allow us to perform more complex analysis of the code.
+    \item \textbf{JSON Output:} We will provide a JSON output option for our tool. This will make it easy to integrate our tool with other tools, such as a CI/CD pipeline.
 \end{itemize}
 
 \section{Software Composition Analysis (SCA)}
@@ -35,13 +34,11 @@ SCA tools identify and track open-source components used in an application. They
 
 \begin{itemize}
     \item \textbf{OWASP Dependency-Check:} An open-source SCA tool that identifies project dependencies and checks for known, publicly disclosed vulnerabilities. It can be used as a command-line tool or as a plugin for build tools like Maven and Gradle.
-    \item \textbf{Snyk:} A commercial SCA tool that provides vulnerability scanning for open-source dependencies and container images. It offers IDE and CI/CD integration.
+    \begin{verbatim}
+# Example: Scan a project for vulnerable dependencies
+dependency-check.sh --scan /path/to/project --format JSON
+    \end{verbatim}
 \end{itemize}
 
-\section{HTTP Header Scanners}
-HTTP header scanners check the security of HTTP response headers.
-
-\begin{itemize}
-    \item \textbf{shcheck:} A command-line tool for checking HTTP security headers. It provides a simple pass/fail scoring system.
-\end{itemize}
-
+\subsection{Feasible Features for Our Tool}
+We will implement a simple SCA feature that can be used to identify the dependencies of a project and check for known vulnerabilities. We will use an existing library to parse the project's dependency file (e.g., `requirements.txt` for Python) and then use an online vulnerability database to check for known vulnerabilities.
