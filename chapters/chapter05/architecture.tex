@@ -89,7 +89,7 @@ else:
         selected_scanners.append(name)
 \end{verbatim}
 
-The application then iterates through the selected scanners, determines the target files for each, and executes the scan. A special case is handled for the \texttt{vulnerable_and_outdated_components} scanner, which specifically looks for dependency management files like \texttt{requirements.txt} or \texttt{pyproject.toml}. Other scanners recursively search for Python (\texttt{*.py}) files within the target directory.
+The application then iterates through the selected scanners, determines the target files for each, and executes the scan. A special case is handled for the \texttt{vulnerable\_and\_outdated\_components} scanner, which specifically looks for dependency management files like \texttt{requirements.txt} or \texttt{pyproject.toml}. Other scanners recursively search for Python (\texttt{*.py}) files within the target directory.
 
 \subsection{Results Presentation}
 
