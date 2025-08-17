@@ -1,5 +1,119 @@
 % Chapter 4: System Architecture and Design
-\chapter{System Architecture and Design}
+\chapter{System Architecture and Implementation}
 \label{chap:architecture}
 
-% Add content here
+\setlength{\parskip}{1em}
+
+This chapter details the architecture and implementation of the core security toolkit. The system is designed as a modular and extensible command-line interface (CLI) application, enabling developers to easily integrate security scanning into their workflow.
+
+\section{System Architecture}
+
+The toolkit is architected in Python, chosen for its extensive standard library, rich third-party package ecosystem, and suitability for scripting and automation. The high-level architecture is centered around a core orchestrator and a set of pluggable scanner modules.
+
+\begin{itemize}
+    \item \textbf{Core Orchestrator (\texttt{main.py}):} This is the central component of the application. It is responsible for parsing user commands and options, loading the appropriate scanner modules, and managing the flow of data from the scanners to the output handlers. It is built using the \texttt{Typer} library to provide a clean and modern command-line interface.
+    \item \textbf{Scanner Modules:} Each security scanner is implemented as a separate Python module (e.g., \texttt{injection.py}, \texttt{cryptographic_failures.py}). This modular design allows for clear separation of concerns and makes the system easy to extend. Each module is responsible for a specific type of vulnerability detection, following the categories outlined in the OWASP Top 10.
+    \item \textbf{Input/Output Handlers:} The toolkit is designed to be flexible in its input and output. It can scan individual files or entire directories. The results are presented in two formats: a human-readable summary table for quick assessment and a machine-readable JSON file for integration with other tools and CI/CD pipelines. The \texttt{rich} library is used to enhance the presentation of output in the terminal.
+\end{itemize}
+
+The overall workflow is as follows:
+\begin{enumerate}
+    \item The user invokes the tool via the command line, specifying which scanners to run and the target path.
+    \item The core orchestrator parses these arguments.
+    \item It dynamically loads and executes the selected scanner modules on the target files.
+    \item Each scanner returns a list of identified issues.
+    \item The orchestrator aggregates the results from all scanners.
+    \item The results are then formatted and presented to the user, either as a table in the console or as a JSON file.
+\end{enumerate}
+
+\section{Implementation Details}
+
+The main entry point of the application is \texttt{main.py}. This script is responsible for parsing command-line arguments, orchestrating the execution of selected security scanners, and presenting the results to the user.
+
+The core of the CLI is the \texttt{scan} command, which is defined using a \texttt{Typer} decorator. This command serves as the primary interface for the user to interact with the toolkit.
+
+\begin{verbatim}
+@app.command()
+def scan(
+    scanners: str = typer.Option(
+        ...,
+        "--scanners",
+        "-s",
+        help="Comma-separated list of scanners to run (e.g. bac,crypto) or 'all'.",
+    ),
+    path: Path = typer.Option(
+        Path("."), "--path", "-p", help="File or directory to scan (defaults to current dir)."
+    ),
+    output: str = typer.Option(None, help="Optional JSON output file."),
+):
+    """Run one or more vulnerability scanners."""
+    # ...
+\end{verbatim}
+
+The \texttt{scan} command accepts three main arguments:
+\begin{itemize}
+    \item \textbf{--scanners (-s):} A required, comma-separated list of scanner names to be executed. The user can also specify \texttt{all} to run every available scanner. This design allows for targeted scans based on the user's needs.
+    \item \textbf{--path (-p):} The file or directory path to be scanned. It defaults to the current directory, providing convenience for the user.
+    \item \textbf{--output:} An optional path to a file where the results will be saved in JSON format. If not provided, the results are printed to the standard output.
+\end{itemize}
+
+\subsection{Scanner Orchestration}
+
+A key feature of the toolkit is its ability to manage and run multiple security scanners. This is achieved through a dictionary that maps scanner names to their respective scanning functions. This approach makes the system easily extensible; adding a new scanner only requires adding a new entry to the dictionary and implementing the corresponding function in a separate module.
+
+\begin{verbatim}
+SCANNERS = {
+    "broken_access_control": scan_bac,
+    "cryptographic_failures": scan_crypto,
+    "injection": scan_injection,
+    "insecure_design": scan_insecure_design,
+    "security_misconfiguration": scan_sm,
+    "vulnerable_and_outdated_components": scan_vaoc,
+}
+\end{verbatim}
+
+The application normalizes the user's input for the \texttt{--scanners} option, allowing for aliases and handling the \texttt{all} keyword. This logic ensures flexibility and ease of use.
+
+\begin{verbatim}
+if scanners.lower() == "all":
+    selected_scanners = list(SCANNERS.keys())
+else:
+    selected_scanners = []
+    for name in scanners.split(","):
+        name = name.strip()
+        if name in ALIASES:
+            name = ALIASES[name]
+        if name not in SCANNERS:
+            typer.secho(f"Error: Scanner '{name}' not found.", fg=typer.colors.RED)
+            raise typer.Exit(1)
+        selected_scanners.append(name)
+\end{verbatim}
+
+The application then iterates through the selected scanners, determines the target files for each, and executes the scan. A special case is handled for the \texttt{vulnerable_and_outdated_components} scanner, which specifically looks for dependency management files like \texttt{requirements.txt} or \texttt{pyproject.toml}. Other scanners recursively search for Python (\texttt{*.py}) files within the target directory.
+
+\subsection{Results Presentation}
+
+To provide a clear and actionable summary of the scan results, the toolkit uses the \texttt{rich} library. A summary table is generated to show the number of issues found by each scanner.
+
+\begin{verbatim}
+table = Table(title="All Scanners Summary")
+table.add_column("Scanner", style="cyan", no_wrap=True)
+table.add_column("Issues Found", justify="right", style="magenta")
+
+for scanner_name in selected_scanners:
+    issues = results_by_scanner[scanner_name]
+    table.add_row(scanner_name.replace("_", " ").title(), str(len(issues)))
+
+console.print(table)
+\end{verbatim}
+
+Finally, the detailed results are provided in JSON format. This can be either written to a file specified by the \texttt{--output} option or printed directly to the console using \texttt{rich}'s JSON printing capabilities, which includes syntax highlighting for better readability. This dual-output functionality supports both interactive use and integration into automated CI/CD pipelines.
+
+\begin{verbatim}
+if output:
+    with open(output, "w", encoding="utf-8") as f:
+        json.dump(results_by_scanner, f, indent=4)
+    typer.secho(f"Results saved to {output}", fg=typer.colors.GREEN)
+else:
+    print_json(data=results_by_scanner)
+\end{verbatim}
