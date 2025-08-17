@@ -12,7 +12,7 @@ The toolkit is architected in Python, chosen for its extensive standard library,
 
 \begin{itemize}
     \item \textbf{Core Orchestrator (\texttt{main.py}):} This is the central component of the application. It is responsible for parsing user commands and options, loading the appropriate scanner modules, and managing the flow of data from the scanners to the output handlers. It is built using the \texttt{Typer} library to provide a clean and modern command-line interface.
-    \item \textbf{Scanner Modules:} Each security scanner is implemented as a separate Python module (e.g., \texttt{injection.py}, \texttt{cryptographic_failures.py}). This modular design allows for clear separation of concerns and makes the system easy to extend. Each module is responsible for a specific type of vulnerability detection, following the categories outlined in the OWASP Top 10.
+    \item \textbf{Scanner Modules:} Each security scanner is implemented as a separate Python module (e.g., \texttt{injection.py}, \texttt{cryptographic\_failures.py}). This modular design allows for clear separation of concerns and makes the system easy to extend. Each module is responsible for a specific type of vulnerability detection, following the categories outlined in the OWASP Top 10.
     \item \textbf{Input/Output Handlers:} The toolkit is designed to be flexible in its input and output. It can scan individual files or entire directories. The results are presented in two formats: a human-readable summary table for quick assessment and a machine-readable JSON file for integration with other tools and CI/CD pipelines. The \texttt{rich} library is used to enhance the presentation of output in the terminal.
 \end{itemize}
 
