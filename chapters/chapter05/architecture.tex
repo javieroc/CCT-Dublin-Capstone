@@ -89,9 +89,49 @@ else:
         selected_scanners.append(name)
 \end{verbatim}
 
-The application then iterates through the selected scanners, determines the target files for each, and executes the scan. A special case is handled for the \texttt{vulnerable\_and\_outdated\_components} scanner, which specifically looks for dependency management files like \texttt{requirements.txt} or \texttt{pyproject.toml}. Other scanners recursively search for Python (\texttt{*.py}) files within the target directory.
+The application then iterates through the selected scanners, determines the target files for each, and executes the scan. A special case is handled for the \texttt{vulnerable\_and\_outdated\_components} scanner, which specifically looks for dependency management files like \texttt{requirements.txt}, \texttt{pyproject.toml}, \texttt{poetry.lock}, or \texttt{Pipfile.lock}. Other scanners recursively search for Python (\texttt{*.py}) files within the target directory.
+
+\section{Scanner Module Details}
+\label{sec:scanner_modules}
+
+Each scanner is tailored to a specific OWASP Top 10 category, employing different techniques to identify potential vulnerabilities. 
+
+\subsection{Broken Access Control}
+This module targets vulnerabilities related to improper access control enforcement. It statically analyzes Python source code using the \texttt{ast} library to parse the code into an Abstract Syntax Tree. The scanner walks through the tree to identify several patterns:
+\begin{itemize}
+    \item \textbf{Hardcoded Roles:} Assignment of privileged roles (e.g., \texttt{"admin"}, \texttt{"superuser"}) as string literals.
+    \item \textbf{Insecure Direct Object References (IDOR):} Direct use of user-controllable input from web request objects (e.g., \texttt{request.args.get()}) in security-sensitive contexts, such as database queries, which could allow users to access unauthorized data.
+    \item \textbf{Insecure Route Parameters:} Use of common identifiers like \texttt{userid} or \texttt{username} as parameters in Flask routes, which may indicate a potential IDOR vulnerability.
+\end{itemize}
+
+\subsection{Cryptographic Failures}
+This module focuses on identifying weaknesses in the use of cryptography. It also uses \texttt{ast} parsing to detect the the following issues:
+\begin{itemize}
+    \item \textbf{Weak Hashing Algorithms:} Use of outdated and insecure hashing functions such as \texttt{MD5} and \texttt{SHA1}.
+    \item \textbf{Weak Cipher Algorithms and Modes:} Use of deprecated ciphers like \texttt{DES} or insecure block cipher modes like Electronic Codebook (\texttt{ECB}).
+    \item \textbf{Insecure Randomness:} Use of the standard \texttt{random} module for security-sensitive operations, which is not cryptographically secure. The \texttt{secrets} module should be used instead.
+    \item \textbf{Hardcoded Secrets:} Detection of hardcoded passwords, API keys, and JWT secrets, which should be loaded from a secure configuration source.
+\end{itemize}
+
+\subsection{Injection}
+The injection module scans for vulnerabilities where untrusted data can be sent to an interpreter as part of a command or query. It uses a hybrid approach of \texttt{ast} parsing and regular expression matching.
+\begin{itemize}
+    \item \textbf{Command Injection:} Detects the use of functions like \texttt{os.system} and \texttt{os.popen} that execute system commands.
+    \item \textbf{Code Injection:} Flags the use of dangerous built-in functions like \texttt{eval()} and \texttt{exec()}.
+    \item \textbf{SQL Injection:} Identifies the use of raw SQL queries, particularly with unsafe string formatting (e.g., f-strings or \texttt{\%}-formatting) in database cursor \texttt{execute()} methods.
+\end{itemize}
+
+\subsection{Insecure Design}
+This module is designed to catch broad, architecture-level weaknesses. In its current implementation, it focuses on a particularly dangerous design choice: the use of \texttt{eval()}. The scanner uses \texttt{ast} parsing to find any calls to this function, as it can execute arbitrary code and often represents a significant security risk.
+
+\subsection{Security Misconfiguration}
+This module searches for common misconfigurations in application setups. Unlike other modules, it performs a direct text search on files rather than parsing the code structure. Its primary target is identifying when a Flask web application is running in debug mode (\texttt{app.run(debug=True)}) in a production environment, which can expose sensitive information and allow for arbitrary code execution.
+
+\subsection{Vulnerable and Outdated Components}
+This scanner addresses the risk of using software components with known vulnerabilities. It operates differently from the static analysis modules by integrating with the \texttt{pip-audit} tool. It scans dependency management files such as \texttt{requirements.txt}, \texttt{pyproject.toml}, \texttt{poetry.lock}, and \texttt{Pipfile.lock}. The module executes \texttt{pip-audit}, parses its JSON output, and reports any identified vulnerable dependencies.
 
 \subsection{Results Presentation}
+
 
 To provide a clear and actionable summary of the scan results, the toolkit uses the \texttt{rich} library. A summary table is generated to show the number of issues found by each scanner.
 
