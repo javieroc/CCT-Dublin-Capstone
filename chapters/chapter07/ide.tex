@@ -2,4 +2,19 @@
 \chapter{IDE Integration with Visual Studio Code}
 \label{chap:ide}
 
-% Add content here
+
+\section{Introduction}
+
+In this chapter, we will explore the integration of security analysis tools within the Visual Studio Code IDE. To demonstrate this, we will use three well-known open-source projects as case studies: PyGoat, VAmPI, and django.nV. These projects are intentionally designed to be vulnerable, making them excellent targets for security analysis and for learning about common security flaws.
+
+\subsection{Case Studies}
+
+\subsubsection{PyGoat}
+PyGoat is an intentionally insecure web application developed by OWASP (Open Web Application Security Project). It is built using the \textbf{Django} framework for Python. The primary purpose of PyGoat is to provide a realistic, yet vulnerable, environment for developers and security professionals to learn about and test for web application vulnerabilities. It covers a wide range of security issues, with a focus on the OWASP Top Ten. The official GitHub repository for PyGoat is \url{https://github.com/OWASP/www-project-pygoat}.
+
+\subsubsection{VAmPI}
+VAmPI (Vulnerable API) is a vulnerable REST API created with the \textbf{Flask} micro-framework for Python. It is specifically designed to demonstrate the vulnerabilities listed in the OWASP Top 10 for APIs. VAmPI is an excellent tool for learning about API security and for evaluating the effectiveness of API security scanners. It features a switch to enable or disable vulnerabilities, which is useful for testing purposes. The project's GitHub repository can be found at \url{https://github.com/erev0s/VAmPI}.
+
+\subsubsection{django.nV}
+django.nV is an intentionally vulnerable web application built with the \textbf{Django} framework. It was originally created by nVisium (now part of NetSPI) as a training tool for developers to learn about common security vulnerabilities in Django applications. The application is a simple project management tool with various security flaws, such as those from the OWASP Top Ten, waiting to be discovered and fixed. The GitHub repository for django.nV is \url{https://github.com/NetSPI/django.nV}.
+
