@@ -42,3 +42,41 @@ dependency-check.sh --scan /path/to/project --format JSON
 
 \subsection{Feasible Features for Our Tool}
 We will implement a simple SCA feature that can be used to identify the dependencies of a project and check for known vulnerabilities. We will use an existing library to parse the project's dependency file (e.g., `requirements.txt` for Python) and then use an online vulnerability database to check for known vulnerabilities.
+
+\section{Differentiation of the Developed Tool}
+
+While there are mature static analysis frameworks such as \textbf{Semgrep}, my tool is not intended to replicate their broad functionality. Instead, it has been designed with a focused scope and unique characteristics that set it apart:
+
+\subsection{Specialization in OWASP Top 10 Vulnerabilities}
+Unlike generic static analyzers, this tool is purpose-built to target the \textbf{OWASP Top 10} categories. Each scanning module is mapped to a specific risk category, such as:
+\begin{itemize}
+    \item \textbf{Injection} $\rightarrow$ Detection of SQL and NoSQL injection patterns.
+    \item \textbf{Insecure Design} $\rightarrow$ Identification of insecure use of dangerous functions (\texttt{eval}, \texttt{exec}, \texttt{pickle.loads}, etc.).
+    \item \textbf{Security Misconfiguration} $\rightarrow$ Discovery of risky framework defaults (e.g., \texttt{DEBUG=True}, insecure cookies, hardcoded secret keys).
+    \item \textbf{Cryptographic Failures} $\rightarrow$ Weak hash usage (\texttt{MD5}, \texttt{SHA1}), hardcoded cryptographic keys.
+\end{itemize}
+
+This focused approach ensures that the tool provides actionable findings directly aligned with industry-recognized security priorities, instead of overwhelming developers with thousands of generic rules.
+
+\subsection{Emphasis on Educational Value}
+The tool is not only a vulnerability scanner but also an \textbf{educational resource}. Each detected issue is accompanied by:
+\begin{itemize}
+    \item A clear explanation of \textbf{why} the pattern is insecure.
+    \item A description of the \textbf{potential attack scenario} (e.g., how enabling debug mode can expose stack traces and sensitive environment variables).
+    \item Guidance on \textbf{remediation strategies} to resolve the issue securely.
+\end{itemize}
+
+This makes the tool especially valuable for students, junior developers, and teams new to secure coding practices, as it doubles as a \textbf{teaching aid} in addition to a security scanner.
+
+\subsection{Multi-Scanner Orchestration}
+The tool integrates multiple scanning approaches into a single CLI-driven workflow:
+\begin{itemize}
+    \item \textbf{Static code analysis} using Python’s AST and regex for pattern detection.
+    \item \textbf{Dependency scanning} via pip-audit to flag outdated or vulnerable libraries.
+    \item \textbf{Configuration scanning} of common framework files (e.g., Django \texttt{settings.py}, Flask \texttt{app.py}, \texttt{.env} files) to identify misconfigurations.
+\end{itemize}
+
+By orchestrating these methods into a unified report and summary, the tool provides developers with a \textbf{consolidated view of their project’s security posture}, something not commonly found in traditional static analysis tools.
+
+\vspace{1em}
+\noindent In summary, the uniqueness of this tool lies in its \textbf{OWASP-focused scope}, its \textbf{educational emphasis}, and its ability to \textbf{combine multiple scanning techniques into one coherent solution}, making it both practical and instructional.
