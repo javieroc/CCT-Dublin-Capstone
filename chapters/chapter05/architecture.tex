@@ -26,6 +26,12 @@ The overall workflow is as follows:
     \item The results are then formatted and presented to the user, either as a table in the console or as a JSON file.
 \end{enumerate}
 
+\section{Choice of Programming Language}
+
+During the initial planning phase of this project, the Rust programming language was considered as a potential candidate for implementation. Rust is known for its performance, memory safety, and strong type system, which are all desirable qualities for a security-focused tool. However, during the research and implementation phase, it became apparent that the steep learning curve of Rust, combined with the strict project deadlines, would pose a significant risk to the timely completion of the project.
+
+Given these constraints, a pragmatic decision was made to switch to Python. Python was chosen for its extensive standard library, rich ecosystem of third-party packages (such as \texttt{Typer} and \texttt{rich}), and its overall ease of development. This allowed for a more rapid development cycle and enabled a stronger focus on the core logic and features of the security toolkit, rather than on the intricacies of a new programming language. This trade-off allowed for the successful implementation of the project within the given timeframe.
+
 \section{Implementation Details}
 
 The main entry point of the application is \texttt{main.py}. This script is responsible for parsing command-line arguments, orchestrating the execution of selected security scanners, and presenting the results to the user.
