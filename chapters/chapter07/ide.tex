@@ -7,6 +7,18 @@
 
 In this chapter, we will explore the integration of security analysis tools within the Visual Studio Code IDE. To demonstrate this, we will use three well-known open-source projects as case studies: PyGoat, VAmPI, and django.nV. These projects are intentionally designed to be vulnerable, making them excellent targets for security analysis and for learning about common security flaws.
 
+\section{Web Frameworks: Django and Flask}
+
+Before diving into the case studies, it is important to understand the web frameworks they are built on: Django and Flask. Both are popular Python web frameworks, but they have different design philosophies and are used for different types of projects. This makes them excellent choices for testing the versatility and effectiveness of a security scanner.
+
+\subsection*{Django}
+Django is a high-level, "batteries-included" web framework that encourages rapid development and clean, pragmatic design. It provides a large number of built-in features, such as an object-relational mapper (ORM), a powerful templating engine, and a comprehensive security module. By testing on Django projects like PyGoat and django.nV, we can evaluate the scanner's ability to detect vulnerabilities in a complex, feature-rich environment. This includes testing for common Django-specific vulnerabilities, such as cross-site request forgery (CSRF) and insecure direct object references (IDORs), as well as more general security issues.
+
+\subsection*{Flask}
+Flask is a lightweight, "micro" web framework that provides the bare essentials for building a web application. It is designed to be simple, flexible, and easy to extend. Flask's minimalism gives developers more control over the components they use, but it also places a greater responsibility on them to ensure the security of their application. By testing on a Flask project like VAmPI, we can evaluate the scanner's ability to detect vulnerabilities in a more minimalistic and customizable environment. This is particularly relevant for testing the detection of security misconfigurations and vulnerabilities that arise from the use of third-party libraries.
+
+By testing on projects built with both Django and Flask, we can ensure that the security scanner is effective across a wide range of Python web applications, from large, monolithic applications to small, lightweight microservices. This demonstrates the scanner's versatility and its ability to adapt to different development styles and project requirements.
+
 \subsection{Case Studies}
 
 \subsubsection{PyGoat}
