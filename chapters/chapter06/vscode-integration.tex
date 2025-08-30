@@ -121,10 +121,10 @@ The range of the diagnostic is set to match the location of the vulnerability in
 
 The `deactivate` function is called when the extension is deactivated. It disposes the `diagnosticCollection` to clean up the resources.
 
-\begin{verbatim}
+\begin{minted}{typescript}
 export function deactivate() {
   if (diagnosticCollection) {
     diagnosticCollection.dispose();
   }
 }
-\end{verbatim}
+\end{minted}

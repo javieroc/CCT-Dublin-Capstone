@@ -38,7 +38,7 @@ The main entry point of the application is \texttt{main.py}. This script is resp
 
 The core of the CLI is the \texttt{scan} command, which is defined using a \texttt{Typer} decorator. This command serves as the primary interface for the user to interact with the toolkit.
 
-\begin{verbatim}
+\begin{minted}{python}
 @app.command()
 def scan(
     scanners: str = typer.Option(
@@ -54,7 +54,7 @@ def scan(
 ):
     """Run one or more vulnerability scanners."""
     # ...
-\end{verbatim}
+\end{minted}
 
 The \texttt{scan} command accepts three main arguments:
 \begin{itemize}
