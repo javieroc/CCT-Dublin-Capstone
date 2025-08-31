@@ -50,17 +50,24 @@ def scan(
     path: Path = typer.Option(
         Path("."), "--path", "-p", help="File or directory to scan (defaults to current dir)."
     ),
-    output: str = typer.Option(None, help="Optional JSON output file."),
+    output: str = typer.Option(None, "--output", "-o", help="Optional JSON output file."),
+    verbose: bool = typer.Option(
+        False,
+        "--verbose",
+        "-v",
+        help="Enable verbose output, showing detailed information about the scan.",
+    ),
 ):
     """Run one or more vulnerability scanners."""
     # ...
 \end{minted}
 
-The \texttt{scan} command accepts three main arguments:
+The \texttt{scan} command accepts four main arguments:
 \begin{itemize}
     \item \textbf{--scanners (-s):} A required, comma-separated list of scanner names to be executed. The user can also specify \texttt{all} to run every available scanner. This design allows for targeted scans based on the user's needs.
     \item \textbf{--path (-p):} The file or directory path to be scanned. It defaults to the current directory, providing convenience for the user.
-    \item \textbf{--output:} An optional path to a file where the results will be saved in JSON format. If not provided, the results are printed to the standard output.
+    \item \textbf{--output (-o):} An optional path to a file where the results will be saved in JSON format. If not provided, the results are printed to the standard output.
+    \item \textbf{--verbose (-v):} An optional flag to enable verbose output. When enabled, the tool provides more detailed information about the scanning process, including which files are being scanned and the specific patterns being matched. This is useful for debugging and for a deeper understanding of the scan results.
 \end{itemize}
 
 \subsection{Scanner Orchestration}
