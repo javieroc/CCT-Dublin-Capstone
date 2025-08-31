@@ -35,7 +35,7 @@ The `package.json` file was then configured to define the extension's metadata, 
 
 The main logic of the extension resides in the `src/extension.ts` file. The `activate` function is the entry point of the extension.
 
-\begin{verbatim}
+\begin{minted}{ts}
 export function activate(context: vscode.ExtensionContext) {
   diagnosticCollection = vscode.languages.createDiagnosticCollection("owaspGuardian");
   context.subscriptions.push(diagnosticCollection);
@@ -51,7 +51,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   vscode.workspace.onDidSaveTextDocument(doc => runSemgrep(doc));
 }
-\end{verbatim}
+\end{minted}
 
 When activated, the extension creates a `DiagnosticCollection`, which is used to manage and display the diagnostics (i.e., the vulnerability highlights). It also registers a command for manual scanning and an event listener that triggers a scan whenever a document is saved.
 
@@ -127,4 +127,4 @@ export function deactivate() {
     diagnosticCollection.dispose();
   }
 }
-\end{minted}
+\end{minted}d}
