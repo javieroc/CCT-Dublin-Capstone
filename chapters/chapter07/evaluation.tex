@@ -30,6 +30,22 @@ django.nV is an intentionally vulnerable web application built with the \textbf{
 \section{Scanner Results and Analysis}
 In this section, we present the results of the security scans performed on the three case study projects: PyGoat, VAmPI, and django.nV. The scans were conducted using two tools: a custom-built scanner designed to detect vulnerabilities based on the OWASP Top 10 2021, and the popular open-source static analysis tool, Semgrep.
 
+\subsection{Methodology}
+
+The security scans were executed using a command-line script (`main.py`). The script allows for specifying the target project path, the scanners to use, and the output file for the results. The following commands are examples of how the scans were performed for each project and scanner type.
+
+To run all custom scanners on the PyGoat project, the following command was used:
+\begin{minted}{bash}
+uv run main.py scan --verbose --scanners all --path ../pygoat --output pygoat-all-results.json
+\end{minted}
+
+To run only the Semgrep scanner on the django.nV project, the command was:
+\begin{minted}{bash}
+uv run main.py scan --verbose --semgrep --path ../django.nV --output django.nV-semgrep.json
+\end{minted}
+
+Similar commands were executed for all three projects to generate the complete set of results discussed in this chapter.
+
 \subsection{Summary of Findings}
 
 The following table provides a high-level summary of the number of vulnerabilities identified by each scanner across the three projects.
