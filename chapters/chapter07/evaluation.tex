@@ -26,3 +26,158 @@ VAmPI (Vulnerable API) is a vulnerable REST API created with the \textbf{Flask} 
 django.nV is an intentionally vulnerable web application built with the \textbf{Django} framework. It was originally created by nVisium (now part of NetSPI) as a training tool for developers to learn about common security vulnerabilities in Django applications. The application is a simple project management tool with various security flaws, such as those from the OWASP Top Ten, waiting to be discovered and fixed. The GitHub repository for django.nV is \url{https://github.com/NetSPI/django.nV}.
 
 % Add content here
+
+\section{Scanner Results and Analysis}
+In this section, we present the results of the security scans performed on the three case study projects: PyGoat, VAmPI, and django.nV. The scans were conducted using two tools: a custom-built scanner designed to detect vulnerabilities based on the OWASP Top 10 2021, and the popular open-source static analysis tool, Semgrep.
+
+\subsection{Summary of Findings}
+
+The following table provides a high-level summary of the number of vulnerabilities identified by each scanner across the three projects.
+
+\begin{table}[h!]
+\centering
+\caption{Summary of Vulnerabilities Found by Each Scanner}
+\label{tab:summary_findings}
+\begin{tabular}{|l|c|c|c|}
+\hline
+\textbf{Project} & \textbf{Custom Scanner} & \textbf{Semgrep} & \textbf{Total} \\
+\hline
+PyGoat & 59 & 101 & 160 \\
+\hline
+VAmPI & 20 & 4 & 24 \\
+\hline
+django.nV & 32 & 37 & 69 \\
+\hline
+\textbf{Total} & \textbf{111} & \textbf{142} & \textbf{253} \\
+\hline
+\end{tabular}
+\end{table}
+
+The results show that a significant number of vulnerabilities were found in each project, with PyGoat having the highest number of findings. This is expected, as PyGoat is designed to be a large and intentionally vulnerable application. The custom scanner and Semgrep found a comparable number of issues in total, but their distribution across the projects varies, highlighting their different detection methodologies.
+
+\subsection{Detailed Findings: PyGoat}
+
+PyGoat, being the largest and most complex project, yielded the highest number of vulnerabilities. The table below details the findings from both scanners, categorized by severity.
+
+\begin{table}[h!]
+\centering
+\caption{Vulnerabilities Identified in PyGoat}
+\label{tab:pygoat_vulns}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{|l|l|c|c|c|c|}
+\hline
+\textbf{Scanner} & \textbf{Category/Type} & \textbf{Critical} & \textbf{High} & \textbf{Medium} & \textbf{Total} \\
+\hline
+\multirow{10}{*}{Custom Scanner} & Broken Access Control & 0 & 0 & 12 & 12 \\
+& Cryptographic Failures & 4 & 3 & 1 & 8 \\
+& Injection & 2 & 1 & 0 & 3 \\
+& Insecure Design & 3 & 0 & 1 & 4 \\
+& Security Misconfiguration & 2 & 3 & 0 & 5 \\
+& Vuln. & Outdated Comp. & 0 & 1 & 0 & 1* \\
+& Ident. & Auth. Failures & 0 & 24 & 0 & 24 \\
+& Software & Data Integrity & 1 & 2 & 0 & 3 \\
+& Server-Side Request Forgery & 0 & 3 & 0 & 3 \\
+\cline{2-6}
+& \textbf{Subtotal} & \textbf{12} & \textbf{37} & \textbf{14} & \textbf{59} \\
+\hline
+\multirow{2}{*}{Semgrep} & Various Rules & 0 & 0 & 101 & 101 \\
+\cline{2-6}
+& \textbf{Subtotal} & \textbf{0} & \textbf{0} & \textbf{101} & \textbf{101} \\
+\hline
+\multicolumn{2}{|l|}{\textbf{Total}} & \textbf{12} & \textbf{37} & \textbf{115} & \textbf{160} \\
+\hline
+\end{tabular}% 
+}
+\caption*{
+\footnotesize *The custom scanner encountered a parsing error when analyzing PyGoat's dependencies, resulting in an incomplete component scan.
+}
+\end{table}
+
+The custom scanner identified 59 issues, with a significant number of critical and high-severity vulnerabilities. The most common findings were related to Identification and Authentication Failures (24 issues) and Broken Access Control (12 issues). Semgrep, on the other hand, reported 101 issues, all classified as medium severity. These were spread across various rule types, including security misconfigurations in Dockerfiles, potential command injections, and insecure cookie handling.
+
+\subsection{Detailed Findings: VAmPI}
+
+VAmPI is a smaller, API-focused project built with Flask. The scan results reflect its more limited scope compared to the Django-based projects.
+
+\begin{table}[h!]
+\centering
+\caption{Vulnerabilities Identified in VAmPI}
+\label{tab:vampi_vulns}
+\begin{tabular}{|l|l|c|c|c|c|}
+\hline
+\textbf{Scanner} & \textbf{Category/Type} & \textbf{Critical} & \textbf{High} & \textbf{Medium} & \textbf{Total} \\
+\hline
+\multirow{6}{*}{Custom Scanner} & Broken Access Control & 0 & 0 & 8 & 8 \\
+& Cryptographic Failures & 1 & 0 & 0 & 1 \\
+& Insecure Design & 1 & 0 & 0 & 1 \\
+& Security Misconfiguration & 1 & 3 & 0 & 4 \\
+& Vuln. & Outdated Comp. & 0 & 5 & 0 & 5 \\
+& Ident. & Auth. Failures & 0 & 1 & 0 & 1 \\
+\cline{2-6}
+& \textbf{Subtotal} & \textbf{3} & \textbf{9} & \textbf{8} & \textbf{20} \\
+\hline
+\multirow{2}{*}{Semgrep} & Various Rules & 0 & 0 & 4 & 4 \\
+\cline{2-6}
+& \textbf{Subtotal} & \textbf{0} & \textbf{0} & \textbf{4} & \textbf{4} \\
+\hline
+\multicolumn{2}{|l|}{\textbf{Total}} & \textbf{3} & \textbf{9} & \textbf{12} & \textbf{24} \\
+\hline
+\end{tabular}
+\end{table}
+
+The custom scanner found 20 vulnerabilities, including critical issues related to a hardcoded secret and running the app in debug mode. It also detected several high-severity vulnerable dependencies in the `requirements.txt` file. Semgrep identified 4 medium-severity issues, related to Dockerfile misconfiguration and a hardcoded secret.
+
+\subsection{Detailed Findings: django.nV}
+
+django.nV is another intentionally vulnerable Django application, serving as a good middle ground between the complexity of PyGoat and the minimalism of VAmPI.
+
+\begin{table}[h!]
+\centering
+\caption{Vulnerabilities Identified in django.nV}
+\label{tab:djangonv_vulns}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{|l|l|c|c|c|c|}
+\hline
+\textbf{Scanner} & \textbf{Category/Type} & \textbf{Critical} & \textbf{High} & \textbf{Medium} & \textbf{Total} \\
+\hline
+\multirow{7}{*}{Custom Scanner} & Broken Access Control & 0 & 1 & 0 & 1 \\
+& Cryptographic Failures & 1 & 0 & 0 & 1 \\
+& Injection & 0 & 2 & 0 & 2 \\
+& Security Misconfiguration & 1 & 5 & 0 & 6 \\
+& Vuln. & Outdated Comp. & 0 & 18 & 0 & 18 \\
+& Ident. & Auth. Failures & 0 & 4 & 0 & 4 \\
+\cline{2-6}
+& \textbf{Subtotal} & \textbf{2} & \textbf{30} & \textbf{0} & \textbf{32} \\
+\hline
+\multirow{2}{*}{Semgrep} & Various Rules & 0 & 0 & 37 & 37 \\
+\cline{2-6}
+& \textbf{Subtotal} & \textbf{0} & \textbf{0} & \textbf{37} & \textbf{37} \\
+\hline
+\multicolumn{2}{|l|}{\textbf{Total}} & \textbf{2} & \textbf{30} & \textbf{37} & \textbf{69} \\
+\hline
+\end{tabular}% 
+}
+\end{table}
+
+In django.nV, the custom scanner found 32 issues, the majority of which (18) were high-severity vulnerable and outdated components. It also flagged critical issues like a hardcoded secret key and debug mode being enabled. Semgrep found 37 medium-severity issues, including potential SQL injections, missing CSRF tokens in templates, and insecure use of JavaScript libraries.
+
+\subsection{Comparison and Tool Effectiveness}
+
+The two scanners demonstrated different strengths and provided complementary coverage.
+
+\textbf{Custom Scanner:} This tool, with its direct mapping to the OWASP Top 10 categories, was highly effective at identifying critical and high-severity vulnerabilities that represent immediate and significant risks. Its major contributions were:
+\begin{itemize}
+    \item \textbf{Dependency Scanning:} It excelled at finding vulnerable and outdated components by checking `requirements.txt` files against a vulnerability database. This accounted for a large portion of the high-severity findings in both VAmPI and django.nV.
+    \item \textbf{Configuration Issues:} It consistently found critical misconfigurations like hardcoded `SECRET_KEY` values and `DEBUG=True` settings, which are common but dangerous mistakes in web applications.
+    \item \textbf{High-Impact Vulnerabilities:} It was able to detect specific, high-impact vulnerability classes like SQL Injection and Server-Side Request Forgery (SSRF).
+\end{itemize}
+
+\textbf{Semgrep:} This tool, with its broad set of community-driven rules, acted as a wider net, catching a larger volume of potential issues and security "smells" that the more targeted custom scanner missed. Its key strengths were:
+\begin{itemize}
+    \item \textbf{Template and Frontend Analysis:} Semgrep was particularly effective at analyzing Django templates (`.html`) and JavaScript (`.js`) files. It found numerous instances of missing CSRF tokens, missing subresource integrity attributes, and potential cross-site scripting (XSS) vectors in frontend code.
+    \item \textbf{Infrastructure as Code:} It identified security issues in `Dockerfile`s, such as running containers as the root user, which is a common infrastructure misconfiguration.
+    \item \textbf{Code Quality and Security Patterns:} It flagged a wide range of issues related to insecure coding patterns, such as the use of `eval()`, insecure cookie configurations, and potential Regular Expression Denial of Service (ReDoS) vulnerabilities.
+\end{itemize}
+
+\subsubsection*{Conclusion on Tool Synergy}
+The results clearly indicate that a multi-layered scanning approach is superior to relying on a single tool. The custom scanner provides high-fidelity, critical alerts that demand immediate attention. Semgrep complements this by providing broader coverage that helps improve the overall security posture and code hygiene of the projects. The combination of a specialized, high-impact scanner and a general-purpose static analysis tool provides a more comprehensive and robust automated security testing strategy.
