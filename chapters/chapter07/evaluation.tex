@@ -58,13 +58,13 @@ The following table provides a high-level summary of the number of vulnerabiliti
 \hline
 \textbf{Project} & \textbf{Custom Scanner} & \textbf{Semgrep} & \textbf{Total} \\
 \hline
-PyGoat & 59 & 101 & 160 \\
+PyGoat & 77 & 101 & 178 \\
 \hline
 VAmPI & 20 & 4 & 24 \\
 \hline
-django.nV & 32 & 37 & 69 \\
+django.nV & 32 & 50 & 82 \\
 \hline
-\textbf{Total} & \textbf{111} & \textbf{142} & \textbf{253} \\
+\textbf{Total} & \textbf{129} & \textbf{155} & \textbf{284} \\
 \hline
 \end{tabular}
 \end{table}
@@ -79,28 +79,28 @@ PyGoat, being the largest and most complex project, yielded the highest number o
 \centering
 \caption{Vulnerabilities Identified in PyGoat}
 \label{tab:pygoat_vulns}
-\resizebox{\textwidth}{!}{%
+\resizebox{\textwidth}{!}{
 \begin{tabular}{|l|l|c|c|c|c|}
 \hline
 \textbf{Scanner} & \textbf{Category/Type} & \textbf{Critical} & \textbf{High} & \textbf{Medium} & \textbf{Total} \\
 \hline
 \multirow{10}{*}{Custom Scanner} & Broken Access Control & 0 & 0 & 12 & 12 \\
-& Cryptographic Failures & 4 & 3 & 1 & 8 \\
-& Injection & 2 & 1 & 0 & 3 \\
-& Insecure Design & 3 & 0 & 1 & 4 \\
-& Security Misconfiguration & 2 & 3 & 0 & 5 \\
+& Cryptographic Failures & 6 & 3 & 2 & 11 \\
+& Injection & 2 & 2 & 0 & 4 \\
+& Insecure Design & 3 & 1 & 1 & 5 \\
+& Security Misconfiguration & 3 & 6 & 0 & 9 \\
 & Vuln. Outdated Comp. & 0 & 1 & 0 & 1* \\
-& Ident. Auth. Failures & 0 & 24 & 0 & 24 \\
-& Software Data Integrity & 1 & 2 & 0 & 3 \\
+& Ident. Auth. Failures & 0 & 28 & 0 & 28 \\
+& Software Data Integrity & 2 & 2 & 0 & 4 \\
 & Server-Side Request Forgery & 0 & 3 & 0 & 3 \\
 \cline{2-6}
-& \textbf{Subtotal} & \textbf{12} & \textbf{37} & \textbf{14} & \textbf{59} \\
+& \textbf{Subtotal} & \textbf{16} & \textbf{46} & \textbf{15} & \textbf{77} \\
 \hline
 \multirow{2}{*}{Semgrep} & Various Rules & 0 & 0 & 101 & 101 \\
 \cline{2-6}
 & \textbf{Subtotal} & \textbf{0} & \textbf{0} & \textbf{101} & \textbf{101} \\
 \hline
-\multicolumn{2}{|l|}{\textbf{Total}} & \textbf{12} & \textbf{37} & \textbf{115} & \textbf{160} \\
+\multicolumn{2}{|l|}{\textbf{Total}} & \textbf{16} & \textbf{46} & \textbf{116} & \textbf{178} \\
 \hline
 \end{tabular}% 
 }
@@ -109,7 +109,7 @@ PyGoat, being the largest and most complex project, yielded the highest number o
 }
 \end{table}
 
-The custom scanner identified 59 issues, with a significant number of critical and high-severity vulnerabilities. The most common findings were related to Identification and Authentication Failures (24 issues) and Broken Access Control (12 issues). Semgrep, on the other hand, reported 101 issues, all classified as medium severity. These were spread across various rule types, including security misconfigurations in Dockerfiles, potential command injections, and insecure cookie handling.
+The custom scanner identified 77 issues, with a significant number of critical and high-severity vulnerabilities. The most common findings were related to Identification and Authentication Failures (28 issues) and Broken Access Control (12 issues). Semgrep, on the other hand, reported 101 issues, all classified as medium severity. These were spread across various rule types, including security misconfigurations in Dockerfiles, potential command injections, and insecure cookie handling.
 
 \subsection{Detailed Findings: VAmPI}
 
@@ -151,7 +151,7 @@ django.nV is another intentionally vulnerable Django application, serving as a g
 \centering
 \caption{Vulnerabilities Identified in django.nV}
 \label{tab:djangonv_vulns}
-\resizebox{\textwidth}{!}{%
+\resizebox{\textwidth}{!}{
 \begin{tabular}{|l|l|c|c|c|c|}
 \hline
 \textbf{Scanner} & \textbf{Category/Type} & \textbf{Critical} & \textbf{High} & \textbf{Medium} & \textbf{Total} \\
@@ -165,17 +165,17 @@ django.nV is another intentionally vulnerable Django application, serving as a g
 \cline{2-6}
 & \textbf{Subtotal} & \textbf{2} & \textbf{30} & \textbf{0} & \textbf{32} \\
 \hline
-\multirow{2}{*}{Semgrep} & Various Rules & 0 & 0 & 37 & 37 \\
+\multirow{2}{*}{Semgrep} & Various Rules & 0 & 0 & 50 & 50 \\
 \cline{2-6}
-& \textbf{Subtotal} & \textbf{0} & \textbf{0} & \textbf{37} & \textbf{37} \\
+& \textbf{Subtotal} & \textbf{0} & \textbf{0} & \textbf{50} & \textbf{50} \\
 \hline
-\multicolumn{2}{|l|}{\textbf{Total}} & \textbf{2} & \textbf{30} & \textbf{37} & \textbf{69} \\
+\multicolumn{2}{|l|}{\textbf{Total}} & \textbf{2} & \textbf{30} & \textbf{50} & \textbf{82} \\
 \hline
 \end{tabular}%
 }
 \end{table}
 
-In django.nV, the custom scanner found 32 issues, the majority of which (18) were high-severity vulnerable and outdated components. It also flagged critical issues like a hardcoded secret key and debug mode being enabled. Semgrep found 37 medium-severity issues, including potential SQL injections, missing CSRF tokens in templates, and insecure use of JavaScript libraries.
+In django.nV, the custom scanner found 32 issues, the majority of which (18) were high-severity vulnerable and outdated components. It also flagged critical issues like a hardcoded secret key and debug mode being enabled. Semgrep found 50 medium-severity issues, including potential SQL injections, missing CSRF tokens in templates, and insecure use of JavaScript libraries.
 
 \subsection{Comparison and Tool Effectiveness}
 
