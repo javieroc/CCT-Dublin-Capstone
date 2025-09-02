@@ -69,14 +69,14 @@ The tool is not only a vulnerability scanner but also an \textbf{educational res
 This makes the tool especially valuable for students, junior developers, and teams new to secure coding practices, as it doubles as a \textbf{teaching aid} in addition to a security scanner.
 
 \subsection{Multi-Scanner Orchestration}
-The tool integrates multiple scanning approaches into a single CLI-driven workflow:
+The tool provides a cohesive workflow by integrating two powerful but distinct scanning engines into a single CLI:
 \begin{itemize}
-    \item \textbf{Static code analysis} using Python’s AST and regex for pattern detection.
-    \item \textbf{Dependency scanning} via pip-audit to flag outdated or vulnerable libraries.
-    \item \textbf{Configuration scanning} of common framework files (e.g., Django \texttt{settings.py}, Flask \texttt{app.py}, \texttt{.env} files) to identify misconfigurations.
+    \item \textbf{Custom Engine:} A suite of specialized scanners using Python's AST for deep analysis, `pip-audit` for dependency checking, and regex for configuration scanning. This engine is designed for high-fidelity, Python-specific vulnerability detection.
+    \item \textbf{Semgrep Engine:} An integrated module that runs the industry-standard Semgrep tool. This provides broad, fast, and multi-language scanning capabilities based on a vast community-driven ruleset.
 \end{itemize}
 
-By orchestrating these methods into a unified report and summary, the tool provides developers with a \textbf{consolidated view of their project’s security posture}, something not commonly found in traditional static analysis tools.
+By orchestrating these two engines within a single tool, developers can choose the most appropriate scanner for their task, receiving a consolidated view of their project's security posture.
+
 
 \vspace{1em}
 \noindent In summary, the uniqueness of this tool lies in its \textbf{OWASP-focused scope}, its \textbf{educational emphasis}, and its ability to \textbf{combine multiple scanning techniques into one coherent solution}, making it both practical and instructional.

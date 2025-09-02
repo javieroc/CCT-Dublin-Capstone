@@ -28,7 +28,13 @@ django.nV is an intentionally vulnerable web application built with the \textbf{
 % Add content here
 
 \section{Scanner Results and Analysis}
-In this section, we present the results of the security scans performed on the three case study projects: PyGoat, VAmPI, and django.nV. The scans were conducted using two tools: a custom-built scanner designed to detect vulnerabilities based on the OWASP Top 10 2021, and the popular open-source static analysis tool, Semgrep.
+In this section, we present the results of the security scans performed on the three case study projects: PyGoat, VAmPI, and django.nV. The security scans were conducted using the two distinct scanning modes of the developed toolkit to compare their effectiveness:
+\begin{enumerate}
+    \item \textbf{Custom Engine Scan:} Executed using the `--scanners all` flag to assess the performance of the custom-built, Python-specific modules.
+    \item \textbf{Semgrep Engine Scan:} Executed using the `--semgrep` flag to assess the performance of the integrated Semgrep engine.
+\end{enumerate}
+
+This methodology allows for a direct comparison of the two complementary engines contained within the same tool, highlighting their different strengths.
 
 \subsection{Methodology}
 

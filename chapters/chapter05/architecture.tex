@@ -62,17 +62,22 @@ def scan(
     # ...
 \end{minted}
 
-The \texttt{scan} command accepts four main arguments:
+The \texttt{scan} command is designed around two primary, mutually exclusive scanning modes:
 \begin{itemize}
-    \item \textbf{--scanners (-s):} A required, comma-separated list of scanner names to be executed. The user can also specify \texttt{all} to run every available scanner. This design allows for targeted scans based on the user's needs.
-    \item \textbf{--path (-p):} The file or directory path to be scanned. It defaults to the current directory, providing convenience for the user.
-    \item \textbf{--output (-o):} An optional path to a file where the results will be saved in JSON format. If not provided, the results are printed to the standard output.
-    \item \textbf{--verbose (-v):} An optional flag to enable verbose output. When enabled, the tool provides more detailed information about the scanning process, including which files are being scanned and the specific patterns being matched. This is useful for debugging and for a deeper understanding of the scan results.
+    \item \textbf{--scanners (-s):} Activates the \textbf{Custom Engine}. The user can provide a comma-separated list of scanner names (e.g., `bac,crypto`) or specify `all` to run every custom module.
+    \item \textbf{--semgrep:} Activates the \textbf{Semgrep Engine}, running Semgrep on the target path. This provides an alternative scanning strategy focused on broad, pattern-based analysis.
 \end{itemize}
 
-\subsection{Scanner Orchestration}
+This design gives the user direct control over the scanning methodology. The core logic ensures that only one engine can be run at a time to prevent conflicting or redundant results.
 
-A key feature of the toolkit is its ability to manage and run multiple security scanners. This is achieved through a dictionary that maps scanner names to their respective scanning functions. This approach makes the system easily extensible; adding a new scanner only requires adding a new entry to the dictionary and implementing the corresponding function in a separate module.
+\subsection{Engine Orchestration}
+
+The toolkit's core logic, located in `main.py`, parses the user's choice of engine.
+
+If the `scanners` flag is used, the application iterates through the `SCANNERS` dictionary, which maps custom scanner names to their respective functions, and executes them.
+
+If the `--semgrep` flag is chosen, the tool instead calls the `scan_semgrep` function. This module acts as a wrapper, executing Semgrep as a subprocess and formatting its JSON output to align with the toolkit's reporting structure. This integration makes Semgrep a first-class component of the tool, not just an external utility.
+
 
 \begin{verbatim}
 SCANNERS = {
