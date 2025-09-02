@@ -201,3 +201,37 @@ The two scanners demonstrated different strengths and provided complementary cov
 
 \subsubsection*{Conclusion on Tool Synergy}
 The results clearly indicate that a multi-layered scanning approach is superior to relying on a single tool. The custom scanner provides high-fidelity, critical alerts that demand immediate attention. Semgrep complements this by providing broader coverage that helps improve the overall security posture and code hygiene of the projects. The combination of a specialized, high-impact scanner and a general-purpose static analysis tool provides a more comprehensive and robust automated security testing strategy.
+
+\section{Usability}
+
+The toolkit is designed to be versatile and can be used in different scenarios, from local development to automated CI/CD pipelines.
+
+\subsection{CLI Tool}
+
+The scanner can be run as a standalone CLI tool, allowing developers to scan their code locally. This provides immediate feedback and helps to identify and fix vulnerabilities early in the development process.
+
+\subsection{CI/CD Pipeline Integration}
+
+In addition to local scanning, the toolkit can be integrated into a CI/CD pipeline to automate the security testing process. This ensures that all code is scanned for vulnerabilities before it is deployed.
+
+Here is an example of a GitHub Action that runs the scanner on every push to the main branch:
+
+\begin{minted}{yaml}
+name: Security Scan
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  security-scan:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Run Scanner
+      run: |
+        # Assuming the scanner is installed and configured
+        scanner --project . --output results.json
+\end{minted}
