@@ -79,7 +79,7 @@ If the `scanners` flag is used, the application iterates through the `SCANNERS` 
 If the `--semgrep` flag is chosen, the tool instead calls the `scan_semgrep` function. This module acts as a wrapper, executing Semgrep as a subprocess and formatting its JSON output to align with the toolkit's reporting structure. This integration makes Semgrep a first-class component of the tool, not just an external utility.
 
 
-\begin{verbatim}
+\begin{minted}{python}
 SCANNERS = {
     "broken_access_control": scan_bac,
     "cryptographic_failures": scan_crypto,
@@ -88,11 +88,11 @@ SCANNERS = {
     "security_misconfiguration": scan_sm,
     "vulnerable_and_outdated_components": scan_vaoc,
 }
-\end{verbatim}
+\end{minted}
 
 The application normalizes the user's input for the \texttt{--scanners} option, allowing for aliases and handling the \texttt{all} keyword. This logic ensures flexibility and ease of use.
 
-\begin{verbatim}
+\begin{minted}{python}
 if scanners.lower() == "all":
     selected_scanners = list(SCANNERS.keys())
 else:
@@ -105,7 +105,7 @@ else:
             typer.secho(f"Error: Scanner '{name}' not found.", fg=typer.colors.RED)
             raise typer.Exit(1)
         selected_scanners.append(name)
-\end{verbatim}
+\end{minted}
 
 The application then iterates through the selected scanners, determines the target files for each, and executes the scan. A special case is handled for the \texttt{vulnerable\_and\_outdated\_components} scanner, which specifically looks for dependency management files like \texttt{requirements.txt}, \texttt{pyproject.toml}, \texttt{poetry.lock}, or \texttt{Pipfile.lock}. Other scanners recursively search for Python (\texttt{*.py}) files within the target directory.
 
@@ -153,7 +153,7 @@ This scanner addresses the risk of using software components with known vulnerab
 
 To provide a clear and actionable summary of the scan results, the toolkit uses the \texttt{rich} library. A summary table is generated to show the number of issues found by each scanner.
 
-\begin{verbatim}
+\begin{minted}{python}
 table = Table(title="All Scanners Summary")
 table.add_column("Scanner", style="cyan", no_wrap=True)
 table.add_column("Issues Found", justify="right", style="magenta")
@@ -163,15 +163,15 @@ for scanner_name in selected_scanners:
     table.add_row(scanner_name.replace("_", " ").title(), str(len(issues)))
 
 console.print(table)
-\end{verbatim}
+\end{minted}
 
 Finally, the detailed results are provided in JSON format. This can be either written to a file specified by the \texttt{--output} option or printed directly to the console using \texttt{rich}'s JSON printing capabilities, which includes syntax highlighting for better readability. This dual-output functionality supports both interactive use and integration into automated CI/CD pipelines.
 
-\begin{verbatim}
+\begin{minted}{python}
 if output:
     with open(output, "w", encoding="utf-8") as f:
         json.dump(results_by_scanner, f, indent=4)
     typer.secho(f"Results saved to {output}", fg=typer.colors.GREEN)
 else:
     print_json(data=results_by_scanner)
-\end{verbatim}
+\end{minted}

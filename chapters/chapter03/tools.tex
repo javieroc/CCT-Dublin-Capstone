@@ -10,15 +10,15 @@ SAST tools analyze source code, byte code, or binary code for security vulnerabi
 
 \begin{itemize}
     \item \textbf{Semgrep:} An open-source, multi-language static analysis tool that supports custom rules written in YAML. It is fast and suitable for CI/CD pipelines.
-    \begin{verbatim}
+    \begin{minted}{bash}
 # Example: Find hardcoded secrets in Python code
 semgrep --config="p/ci" --error .
-    \end{verbatim}
+    \end{minted}
     \item \textbf{Bandit:} A tool designed for finding common security issues in Python code. It works by analyzing the Abstract Syntax Tree (AST) of the code.
-    \begin{verbatim}
+    \begin{minted}{bash}
 # Example: Scan a Python file for vulnerabilities
 bandit -r examples/hardcoded_password.py
-    \end{verbatim}
+    \end{minted}
 \end{itemize}
 
 \subsection{Feasible Features for Our Tool}

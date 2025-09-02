@@ -17,7 +17,7 @@ The first step was to set up a new VS Code extension project using TypeScript. T
 
 The `package.json` file was then configured to define the extension's metadata, such as its name, description, and activation events. The activation event was set to `onLanguage:python`, which means the extension is activated whenever a Python file is opened.
 
-\begin{verbatim}
+\begin{minted}{json}
 "activationEvents": [
     "onLanguage:python"
 ],
@@ -29,7 +29,7 @@ The `package.json` file was then configured to define the extension's metadata, 
         }
     ]
 },
-\end{verbatim}
+\end{minted}
 
 \subsection{Activation and Core Components}
 
@@ -59,7 +59,7 @@ When activated, the extension creates a `DiagnosticCollection`, which is used to
 
 The core of the extension's functionality is its integration with the `semgrep` command-line tool. The `runSemgrep` function is responsible for this integration.
 
-\begin{verbatim}
+\begin{minted}{typescript}
 async function runSemgrep(document: vscode.TextDocument) {
   if (document.languageId !== "python") {
     return;
@@ -78,7 +78,7 @@ async function runSemgrep(document: vscode.TextDocument) {
     // ...
   }
 }
-\end{verbatim}
+\end{minted}
 
 This function executes `semgrep` as a child process using `child\_process.execFile`. The command is configured to use the OWASP Top 10 ruleset and to output the results in JSON format.
 
@@ -86,7 +86,7 @@ This function executes `semgrep` as a child process using `child\_process.execFi
 
 The JSON output from `semgrep` is parsed to extract the vulnerability information. For each finding, a `Diagnostic` object is created.
 
-\begin{verbatim}
+\begin{minted}{typescript}
 const result = JSON.parse(stdout);
 const diagnostics: vscode.Diagnostic[] = [];
 
@@ -106,16 +106,16 @@ for (const finding of result.results || []) {
 }
 
 diagnosticCollection.set(document.uri, diagnostics);
-\end{verbatim}
+\end{minted}
 
 The range of the diagnostic is set to match the location of the vulnerability in the code. The severity is set to `Error`, which results in a red highlight. Finally, the diagnostics are added to the `diagnosticCollection`, which makes them visible in the editor. If `semgrep` fails, an error message is shown to the user.
 
-\begin{verbatim}
+\begin{minted}{typescript}
   } catch (err: any) {
     console.error("Semgrep failed:", err.message || err);
     vscode.window.showErrorMessage(`Semgrep failed: ${err.message || err}`);
   }
-\end{verbatim}
+\end{minted}
 
 \subsection{Deactivation}
 
