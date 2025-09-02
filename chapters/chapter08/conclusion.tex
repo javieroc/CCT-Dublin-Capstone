@@ -2,4 +2,37 @@
 \chapter{Conclusion}
 \label{chap:conclusion}
 
-% Add content here
+This capstone project has been a comprehensive journey into the world of automated security analysis, from conceptualization and tool development to rigorous evaluation. The primary goal was to design, build, and test a static analysis security testing (SAST) tool for Python web applications, culminating in a functional command-line scanner and an integrated VSCode extension. This chapter reflects on the key learnings, the strategic decisions made during development, and the overall effectiveness of the resulting tools.
+
+\section{The Development Journey: A Tale of Two Languages}
+
+A significant learning experience during this project was the strategic pivot from an initial exploration of Rust to the final implementation in Python. While Rust was considered for its promise of performance and memory safety, Python was ultimately chosen for its rich ecosystem and rapid development capabilities. The availability of mature libraries for Abstract Syntax Tree (AST) parsing, dependency analysis, and vulnerability database integration in Python significantly accelerated the development process. This decision underscores a critical lesson in software engineering: while technical ideals are important, pragmatic choices that leverage existing ecosystems often lead to more productive and successful outcomes, especially within the constraints of a research project.
+
+\section{Differentiating the Scanner: Custom vs. General-Purpose Tools}
+
+The evaluation in Chapter \ref{chap:evaluation} clearly demonstrates that the custom-built scanner and a general-purpose tool like Semgrep are not mutually exclusive but are, in fact, highly complementary.
+
+The custom scanner's strength lies in its high-fidelity, context-specific detections. It excelled at identifying critical misconfigurations, such as hardcoded `SECRET_KEY` values and enabled `DEBUG` modes, which are often the "low-hanging fruit" for attackers. Furthermore, its direct integration with vulnerability databases for dependency checking provided precise and actionable alerts on outdated and vulnerable components—a task that generic pattern-matching tools are not typically designed for.
+
+Semgrep, on the other hand, acted as a much wider net. Its extensive, community-driven rule set was particularly effective at analyzing Django templates and frontend JavaScript code, identifying a broad range of security "smells" and insecure coding patterns that the custom scanner was not designed to catch. This highlights the value of a multi-layered approach: the custom scanner provides deep, high-impact findings, while Semgrep provides broad coverage, improving the overall code hygiene and security posture.
+
+\section{Practical Learnings: The VSCode Extension}
+
+The development of the `vscode-owasp-guardian` extension provided valuable insights into the practical challenges of integrating security tooling into a developer's workflow. The decision to use Semgrep as the backend for the extension was made to leverage its powerful and extensive rule set.
+
+However, this approach revealed a tangible trade-off between analytical power and real-time performance. As you noted, the reliance on Semgrep resulted in a slight but noticeable delay in feedback within the editor. This is a classic challenge in security tooling: the more thorough the analysis, the more resources and time it consumes. This experience highlights that for developer-centric tools, the user experience—including the speed of feedback—is as important as the accuracy of the results. A tool that is too slow, no matter how powerful, risks being disabled by the very developers it is meant to help.
+
+\section{Overall Conclusion and Future Work}
+
+This capstone project successfully achieved its objectives. It produced a functional SAST scanner capable of identifying critical vulnerabilities in Python web applications and demonstrated its value as part of a holistic, multi-layered security strategy. The process yielded significant learnings in tool development, framework security, and the practicalities of integrating security into the development lifecycle.
+
+Looking ahead, several avenues for future work could build upon this project's foundation:
+
+\begin{itemize}
+    \item \textbf{Performance Optimization:} Both the CLI scanner and the VSCode extension could be optimized. For the extension, this might involve more sophisticated triggering mechanisms that avoid running a full scan on every minor file change, or implementing a caching layer to reduce redundant analysis.
+    \item \textbf{Rule Expansion:} The custom scanner could be enhanced with new detection modules for other OWASP Top 10 categories or for framework-specific vulnerabilities beyond the ones currently implemented.
+    \item \textbf{Enhanced User Feedback:} The VSCode extension could be improved to provide more detailed, actionable remediation advice directly within the editor, potentially linking to relevant documentation or code examples.
+    \item \textbf{Broader Language Support:} The core scanning engine could be designed to be language-agnostic, allowing for the addition of parsers and rules for other languages like JavaScript, Ruby, or Go.
+\end{itemize}
+
+Ultimately, this capstone project serves as a strong proof-of-concept and a valuable learning experience, providing a solid foundation for future research and development in the field of automated application security.
