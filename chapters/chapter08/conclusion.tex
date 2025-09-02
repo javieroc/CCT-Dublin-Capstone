@@ -2,7 +2,7 @@
 \chapter{Conclusion}
 \label{chap:conclusion}
 
-This capstone project has been a comprehensive journey into the world of automated security analysis, from conceptualization and tool development to rigorous evaluation. The primary goal was to design, build, and test a static analysis security testing (SAST) tool for Python web applications, culminating in a functional command-line scanner and an integrated VSCode extension. This chapter reflects on the key learnings, the strategic decisions made during development, and the overall effectiveness of the resulting tools.
+This capstone project was an exploration into creating a developer-centric security tool, focusing on the practical implementation of a command-line interface (CLI) designed to seamlessly integrate into the development process. The primary goal was to build a scanner that empowers developers to secure their applications by checking for vulnerabilities mapped to the OWASP Top 10. Although the final implementation focused on Python, the initial vision was for a multi-language tool with support for JavaScript and Java, highlighting the ambition to create a versatile security solution. This chapter reflects on the key learnings from this journey, the strategic decisions made during development, and the overall effectiveness of the resulting CLI tool and its integrated VSCode extension.
 
 \section{The Development Journey: A Tale of Two Languages}
 
@@ -29,10 +29,12 @@ This capstone project successfully achieved its objectives. It produced a functi
 Looking ahead, several avenues for future work could build upon this project's foundation:
 
 \begin{itemize}
+    \item \textbf{Continuous Rule Maintenance:} A significant challenge for any security tool is staying current. Future work should include establishing a process for updating the scanner's detection rules to align with emerging vulnerability patterns and future iterations of the OWASP Top 10. This would ensure the tool remains relevant and effective over time.
+    \item \textbf{Broader Language Support:} The scanner could be extended to support other popular languages. As initially envisioned, adding support for JavaScript (and its frameworks like Node.js and React) and Java would be a primary focus, requiring the implementation of new language-specific parsers and detection rules.
     \item \textbf{Performance Optimization:} Both the CLI scanner and the VSCode extension could be optimized. For the extension, this might involve more sophisticated triggering mechanisms that avoid running a full scan on every minor file change, or implementing a caching layer to reduce redundant analysis.
     \item \textbf{Rule Expansion:} The custom scanner could be enhanced with new detection modules for other OWASP Top 10 categories or for framework-specific vulnerabilities beyond the ones currently implemented.
     \item \textbf{Enhanced User Feedback:} The VSCode extension could be improved to provide more detailed, actionable remediation advice directly within the editor, potentially linking to relevant documentation or code examples.
-    \item \textbf{Broader Language Support:} The core scanning engine could be designed to be language-agnostic, allowing for the addition of parsers and rules for other languages like JavaScript, Ruby, or Go.
+    \item \textbf{Integration with Artificial Intelligence:} To avoid obsolescence in the face of rapid AI advancements, future work should explore integrating AI capabilities. This could involve using machine learning models to detect complex, novel vulnerabilities that defy static rules, or leveraging Large Language Models (LLMs) to provide more nuanced, context-aware remediation suggestions. AI could also be used to automatically generate new detection patterns from vulnerability reports, ensuring the tool evolves alongside the threat landscape.
 \end{itemize}
 
 Ultimately, this capstone project serves as a strong proof-of-concept and a valuable learning experience, providing a solid foundation for future research and development in the field of automated application security.
