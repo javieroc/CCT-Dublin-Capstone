@@ -76,7 +76,7 @@ The toolkit's core logic, located in `main.py`, parses the user's choice of engi
 
 If the `scanners` flag is used, the application iterates through the `SCANNERS` dictionary, which maps custom scanner names to their respective functions, and executes them.
 
-If the `--semgrep` flag is chosen, the tool instead calls the `scan_semgrep` function. This module acts as a wrapper, executing Semgrep as a subprocess and formatting its JSON output to align with the toolkit's reporting structure. This integration makes Semgrep a first-class component of the tool, not just an external utility.
+If the `--semgrep` flag is chosen, the tool instead calls the `scan\_semgrep` function. This module acts as a wrapper, executing Semgrep as a subprocess and formatting its JSON output to align with the toolkit's reporting structure. This integration makes Semgrep a first-class component of the tool, not just an external utility.
 
 
 \begin{verbatim}
