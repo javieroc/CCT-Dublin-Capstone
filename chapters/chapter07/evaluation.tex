@@ -110,12 +110,10 @@ PyGoat, being the largest and most complex project, yielded the highest number o
 \hline
 \end{tabular}% 
 }
-\caption*{
-\footnotesize *The custom scanner encountered a parsing error when analyzing PyGoat's dependencies, resulting in an incomplete component scan.
-}
+
 \end{table}
 
-The custom scanner identified 77 issues, with a significant number of critical and high-severity vulnerabilities. The most common findings were related to Identification and Authentication Failures (28 issues) and Broken Access Control (12 issues). Semgrep, on the other hand, reported 101 issues, all classified as medium severity. These were spread across various rule types, including security misconfigurations in Dockerfiles, potential command injections, and insecure cookie handling.
+The custom scanner identified 77 issues, with a significant number of critical and high-severity vulnerabilities. The most common findings were related to Identification and Authentication Failures (28 issues) and Broken Access Control (12 issues). It should be noted, however, that the custom scanner encountered a parsing error with PyGoat's dependencies, resulting in an incomplete component scan and fewer findings in that category. Semgrep, on the other hand, reported 101 issues, all classified as medium severity. These were spread across various rule types, including security misconfigurations in Dockerfiles, potential command injections, and insecure cookie handling.
 
 \subsection{Detailed Findings: VAmPI}
 
