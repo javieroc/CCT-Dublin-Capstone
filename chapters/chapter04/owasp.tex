@@ -3,51 +3,98 @@
 \label{chap:owasp}
 \setlength{\parskip}{1em}
 
-The Open Web Application Security Project (OWASP) provides unbiased, practical, and cost-effective information about application security. Its flagship project, the OWASP Top 10, is a globally recognized standard for developers and web application security. It represents a broad consensus about the most critical security risks to web applications.
+The Open Web Application Security Project (OWASP) is a globally recognized, non-profit organization dedicated to improving software security through open-source projects, community education, and industry research. Its flagship resource, the OWASP Top 10, is widely regarded as the de facto standard for identifying and prioritizing the most critical security risks to web applications. The list is updated periodically based on community feedback, industry research, and real-world vulnerability data, making it a practical framework for security-aware software design and development.
 
-This thesis leverages the OWASP Top 10 as a foundational guide for the security rules and checks implemented in the toolkit. The tool is not designed to cover every aspect of the OWASP Top 10, but rather to focus on vulnerabilities that can be detected through static analysis of source code, dependency scanning, and configuration scanning. This chapter outlines the specific OWASP categories that the toolkit will address.
+This project uses the OWASP Top 10 (2021 edition) as the foundation for defining and implementing the toolkit's scanning rules. While the Top 10 provides a comprehensive overview of key risks, not all categories are equally suited to static analysis techniques. This toolkit primarily focuses on vulnerabilities that can be detected via static code inspection, dependency analysis, and configuration scanning. The following sections describe each relevant category, its significance, and the approach taken by this project.
 
 \section{A01:2021 - Broken Access Control}
-Access control enforces policies such that users cannot act outside of their intended permissions. Failures typically lead to unauthorized information disclosure, modification, or destruction of all data or performing a business function outside the user's limits. 
-The toolkit will contribute to detecting broken access control by scanning for common anti-patterns in the source code, such as hardcoded user roles or privileges, and by identifying insecure direct object reference (IDOR) patterns where user-controllable input is used to access resources without proper authorization checks.
+Broken Access Control occurs when users can act outside their intended permissions, often due to missing or poorly implemented authorization checks. This can result in unauthorized viewing, modification, or deletion of data, or even privilege escalation.
+The toolkit contributes to detecting this risk by:
+\begin{itemize}
+    \item Identifying hardcoded user roles or privilege assignments that bypass centralized authorization logic.
+    \item Detecting Insecure Direct Object References (IDOR), where user-controlled parameters are directly used to retrieve or modify sensitive resources.
+    \item Scanning for routes or API endpoints with missing or inconsistent access control checks.
+\end{itemize}
+Because access control policies are often implemented in code, static analysis is well-suited for spotting such anti-patterns.
 
 \section{A02:2021 - Cryptographic Failures}
-This category focuses on failures related to cryptography, which can lead to the exposure of sensitive data. Common issues include the use of weak or outdated cryptographic algorithms, improper key management, and the use of hardcoded cryptographic keys.
-The static analysis module of the toolkit will scan source code for:
+Formerly known as ``Sensitive Data Exposure,'' this category highlights weaknesses in cryptographic practices, such as using outdated algorithms, improper key storage, or failing to encrypt sensitive data.
+The toolkit scans for:
 \begin{itemize}
-    \item Use of weak hashing algorithms (e.g., MD5, SHA1).
-    \item Hardcoded secrets and cryptographic keys in the source code.
-    \item Insecure implementation of cryptographic functions.
+    \item Deprecated hashing algorithms like \texttt{MD5} and \texttt{SHA1}, or insecure cipher modes such as ECB.
+    \item Hardcoded cryptographic keys, passwords, or tokens in source code.
+    \item Insecure random number generation (\texttt{random} module instead of \texttt{secrets} in Python).
 \end{itemize}
+Static analysis is highly effective here because cryptographic misuse typically appears in explicit function calls or configuration files.
 
 \section{A03:2021 - Injection}
-Injection flaws, such as SQL, NoSQL, OS, and LDAP injection, occur when untrusted data is sent to an interpreter as part of a command or query. The attacker's hostile data can trick the interpreter into executing unintended commands or accessing data without proper authorization.
-The toolkit's static analysis engine will inspect the codebase for patterns indicative of injection vulnerabilities, such as the use of un-sanitized user input in database queries or shell commands.
+Injection flaws, such as SQL, NoSQL, OS command, and LDAP injections, occur when untrusted input is passed to an interpreter without adequate sanitization. Exploits can result in data leakage, privilege escalation, or arbitrary code execution.
+Our approach:
+\begin{itemize}
+    \item Detect string concatenation or f-strings in database queries.
+    \item Flag unsafe shell command execution using functions like \texttt{os.system()} or \texttt{popen()}.
+    \item Identify unsafe template rendering practices in frameworks like Django and Flask.
+\end{itemize}
+These patterns are relatively easy to detect using Abstract Syntax Tree (AST) analysis and targeted regex searches.
 
 \section{A04:2021 - Insecure Design}
-Insecure design is a broad category representing different weaknesses, expressed as "missing or ineffective control design". These are not implementation bugs, but flaws in the design of the application that can lead to vulnerabilities.
-The toolkit will help identify insecure design patterns by flagging code structures that are known to be risky, such as the use of functions that are inherently insecure (e.g., `eval()`) or the lack of input validation in critical parts of the application.
+Insecure Design emphasizes flaws introduced during architecture or planning rather than coding mistakes. Examples include the absence of threat modeling, missing security controls, or reliance on unsafe architectural choices.
+While not all design issues can be statically detected, the toolkit highlights:
+\begin{itemize}
+    \item Use of dangerous functions like \texttt{eval()}, \texttt{exec()}, and insecure deserialization methods.
+    \item Lack of data validation logic in application entry points.
+\end{itemize}
+This helps developers identify high-risk patterns early, even if deeper architectural reviews are still necessary.
 
 \section{A05:2021 - Security Misconfiguration}
-Security misconfiguration can happen at any level of an application stack, including the network services, platform, web server, application server, database, frameworks, and custom code. This is often a result of insecure default configurations, incomplete or ad-hoc configurations, open cloud storage, misconfigured HTTP headers, and verbose error messages containing sensitive information.
-The toolkit will address this category in two ways:
+Security misconfigurations occur when systems are deployed with insecure defaults, incomplete hardening, or verbose error messages. They are often exploited by automated tools due to their simplicity.  
+This toolkit addresses this by:
 \begin{itemize}
-    \item The HTTP security header scanner will check for the presence and correct configuration of security-related headers (e.g., `Strict-Transport-Security`, `X-Frame-Options`, `Content-Security-Policy`).
-    \item The static analysis module will look for common misconfigurations in source code, such as running in debug mode in a production environment.
+    \item Scanning for dangerous runtime configurations (e.g., \texttt{DEBUG=True} in production).
+    \item Checking for missing or misconfigured HTTP headers such as \texttt{Strict-Transport-Security} or \texttt{Content-Security-Policy}.
+    \item Detecting exposed sensitive files like \texttt{.env} or backup files.
 \end{itemize}
 
 \section{A06:2021 - Vulnerable and Outdated Components}
-Modern applications are built using a large number of third-party components, such as libraries and frameworks. If a vulnerable component is used, it can undermine the security of the entire application.
-The toolkit will include a Software Composition Analysis (SCA) module that scans the project's dependencies (e.g., `requirements.txt` for Python, `package.json` for JavaScript, `composer.json` for PHP, or `pom.xml` for Java) and checks them against a database of known vulnerabilities.
+Applications often depend on a complex ecosystem of third-party libraries and frameworks. Vulnerabilities in these dependencies are a major source of breaches.
+The toolkit integrates a Software Composition Analysis (SCA) engine to:
+\begin{itemize}
+    \item Parse dependency manifests (\texttt{requirements.txt}, \texttt{package.json}, etc.) to generate a Software Bill of Materials (SBOM).
+    \item Cross-reference dependency versions against public vulnerability databases to highlight security risks.
+\end{itemize}
 
 \section{A07:2021 - Identification and Authentication Failures}
-This category includes vulnerabilities related to user identity and authentication. Common examples include allowing brute-force attacks, using weak password policies, and improper session management.
-The static analysis engine will scan for common authentication and session management anti-patterns, such as the use of predictable session identifiers or the lack of rate limiting on authentication endpoints.
+Authentication flaws occur when systems fail to enforce strong authentication measures or protect credentials effectively.  
+Static analysis detects:
+\begin{itemize}
+    \item Hardcoded session tokens, passwords, or API keys.
+    \item Missing rate limiting or account lockout features in login mechanisms.
+    \item Weak password validation or reliance on outdated hashing techniques.
+\end{itemize}
 
 \section{A08:2021 - Software and Data Integrity Failures}
-This category focuses on vulnerabilities related to software updates, critical data, and the CI/CD pipeline without verifying integrity. One of the most common examples is insecure deserialization, where untrusted data is used to abuse the logic of an application, inflict a denial-of-service (DoS) attack, or even execute arbitrary code.
-The toolkit's static analysis module will scan for the use of insecure deserialization functions on untrusted data.
+This category includes failures to verify the integrity of software updates, dependencies, or critical data. A common example is insecure deserialization, where untrusted data is used to reconstruct objects.
+The scanner identifies:
+\begin{itemize}
+    \item Insecure deserialization functions operating on untrusted input.
+    \item Lack of checksum or digital signature validation in deployment scripts.
+\end{itemize}
+
+\section{A09:2021 - Security Logging and Monitoring Failures}
+This category emphasizes the importance of security observability. Applications without sufficient logging, monitoring, and alerting mechanisms cannot effectively detect or respond to attacks.
+Unlike other OWASP Top 10 items, this category is largely \textbf{not suited for static analysis}:
+\begin{itemize}
+    \item Logging adequacy depends on runtime behavior, coverage, and integration with Security Information and Event Management (SIEM) tools—factors not visible in source code alone.
+    \item Simply checking for logging statements (e.g., \texttt{logger.info()}) is not enough to determine effectiveness. Analysis requires runtime context, threat modeling, and incident response strategies.
+    \item Monitoring failures often involve missing infrastructure elements (e.g., intrusion detection systems, alerting pipelines) that are outside the application codebase.
+\end{itemize}
+For these reasons, A09 is explicitly \textbf{out of scope} for this project, though future work could explore runtime agents or observability tooling integrations.
 
 \section{A10:2021 - Server-Side Request Forgery (SSRF)}
-SSRF flaws occur whenever a web application is fetching a remote resource without validating the user-supplied URL. It allows an attacker to coerce the application to send a crafted request to an unexpected destination, even when protected by a firewall, VPN, or another type of network access control list (ACL).
-The static analysis engine will look for code patterns where user-controlled data is used to construct URLs for server-side requests, which is a primary indicator of potential SSRF vulnerabilities.
+SSRF occurs when an attacker manipulates server-side functionality to send unauthorized requests, often bypassing network restrictions.
+This toolkit identifies:
+\begin{itemize}
+    \item Code patterns where user input is directly used to construct request URLs.
+    \item Absence of input validation or allowlist-based request filtering.
+\end{itemize}
+Static analysis is effective because SSRF vulnerabilities typically appear in explicit URL construction logic.
