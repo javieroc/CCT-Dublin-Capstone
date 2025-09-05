@@ -16,6 +16,13 @@ The toolkit is architected in Python, chosen for its extensive standard library,
     \item \textbf{Input/Output Handlers:} The toolkit is designed to be flexible in its input and output. It can scan individual files or entire directories. The results are presented in two formats: a human-readable summary table for quick assessment and a machine-readable JSON file for integration with other tools and CI/CD pipelines. The \texttt{rich} library is used to enhance the presentation of output in the terminal.
 \end{itemize}
 
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{images/CLI-Diagram.png}
+\caption{High-level system architecture showing the CLI interface, Core Orchestrator, two scanning engines (Custom Engine and Semgrep Engine), and the associated scanner modules.}
+\label{fig:system_architecture}
+\end{figure}
+
 The overall workflow is as follows:
 \begin{enumerate}
     \item The user invokes the tool via the command line, specifying which scanners to run and the target path.
