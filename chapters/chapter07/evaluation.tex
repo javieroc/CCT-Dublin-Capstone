@@ -212,9 +212,11 @@ The scanner can be run as a standalone CLI tool, allowing developers to scan the
 
 \subsection{CI/CD Pipeline Integration}
 
-In addition to local scanning, the toolkit can be integrated into a CI/CD pipeline to automate the security testing process. This ensures that all code is scanned for vulnerabilities before it is deployed.
+In addition to local scanning, the toolkit can be integrated into a CI/CD pipeline to automate the security testing process. This ensures that all code is scanned for vulnerabilities before it is deployed. A key feature for this is the `--fail-on-severity` flag, which instructs the scanner to exit with a non-zero status code if any vulnerabilities of a specified severity (or higher) are found.
 
-Here is an example of a GitHub Action that runs the scanner on every push to the main branch:
+In a CI/CD context, a non-zero exit code will cause the pipeline step to fail. This effectively creates an automated security gate, blocking code with high-risk issues from being merged or deployed. For example, a team can configure their pipeline to fail if any `critical` or `high` severity vulnerabilities are detected, enforcing a minimum security standard.
+
+Here is an updated example of a GitHub Action that uses this flag to fail the build if high-severity vulnerabilities are present:
 
 \begin{minted}{yaml}
 name: Security Scan
@@ -230,8 +232,9 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Run Scanner
+    - name: Run Scanner and Fail on High Severity
       run: |
-        # Assuming the scanner is installed and configured
-        scanner --project . --output results.json
+        # The --fail-on-severity flag causes the step to fail
+        # if vulnerabilities of the specified level or higher are found.
+        uv run main.py scan --semgrep --path . --fail-on-severity high --output results.json
 \end{minted}
